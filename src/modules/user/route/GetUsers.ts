@@ -6,7 +6,6 @@ import Boom from "@hapi/boom";
 
 export default class GetUsers extends Api {
 
-
     constructor() {
         super();
         this.path = '/users';

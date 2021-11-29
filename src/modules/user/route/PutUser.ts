@@ -7,8 +7,7 @@ import UserEntity from "../db/UserEntity";
 import {makeUid} from "../../../class/functions";
 import Boom from "@hapi/boom";
 
-export default class PostUser extends Api {
-
+export default class PutUser extends Api {
 
     constructor() {
         super();
@@ -30,19 +29,21 @@ export default class PostUser extends Api {
         // @ts-ignore
         const {id, nom, prenom, email, role} = request.payload;
         const userTable = new UserTable(request.getKnex());
-        const userEntity = new UserEntity();
-        const password = makeUid(10);
-        userEntity.setId(parseInt(id))
+        const usersEntity = new UserEntity();
+        usersEntity.setId(parseInt(id))
             .setNom(nom)
             .setPrenom(prenom)
-            .setPassword(password)
             .setEmail(email)
             .setRoles(role);
-        console.log('userEntity', userEntity);
-        return userTable.update(userEntity)
+        return userTable.findOneByid(usersEntity.getId())
             .then(userEntity => {
                 if (!userEntity) return Boom.internal('une erreur est survenue lors de la modification.');
-                return response.response(userEntity).code(201);
+                usersEntity.setPassword((userEntity as UserEntity).getPassword());
+                return userTable.update(usersEntity).then(userEntity => {
+                        if (!userEntity) return Boom.internal('une erreur est survenue lors de la modification.');
+                        return response.response(userEntity).code(201);
+                    }
+                )
             })
     }
 }

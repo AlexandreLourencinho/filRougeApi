@@ -7,39 +7,31 @@ import UserEntity from "../db/UserEntity";
 import {makeUid} from "../../../class/functions";
 import Boom from "@hapi/boom";
 
-export default class PostUser extends Api {
+export default class DeleteUser extends Api {
 
     constructor() {
         super();
         this.path = '/users';
-        this.method = 'POST';
+        this.method = 'DELETE';
         this.auth = {};
         this.validate = {
             payload: Joi.object({
-                nom: Joi.string().required(),
-                prenom: Joi.string().required(),
-                email: Joi.string().required(),
-                role: Joi.string().required()
+                id: Joi.string().required()
             })
         };
     }
 
     public run(request: Request, response: ResponseToolkit): ResponseReturn {
         // @ts-ignore
-        const {nom, prenom, email, role} = request.payload;
+        const {id} = request.payload;
         const userTable = new UserTable(request.getKnex());
         const userEntity = new UserEntity();
-        const password = makeUid(10);
-        userEntity.setNom(nom)
-            .setPrenom(prenom)
-            .setPassword(password)
-            .setEmail(email)
-            .setRoles(role);
+        userEntity.setId(parseInt(id));
         console.log('userEntity', userEntity);
-        return userTable.insert(userEntity)
-            .then(userEntity => {
-                if (!userEntity) return Boom.internal('une erreur est survenue lors de l\'ajout.');
-                return response.response(userEntity).code(201);
+        return userTable.delete(userEntity)
+            .then(result => {
+                if (!result) return Boom.internal('une erreur est survenue lors de la modification.');
+                return response.response().code(200);
             })
     }
 }
