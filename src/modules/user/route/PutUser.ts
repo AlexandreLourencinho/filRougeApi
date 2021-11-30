@@ -4,7 +4,6 @@ import {Request, ResponseReturn} from "../../../class/hapi/types";
 import {ResponseToolkit} from "@hapi/hapi";
 import UserTable from "../db/UserTable";
 import UserEntity from "../db/UserEntity";
-import {makeUid} from "../../../class/functions";
 import Boom from "@hapi/boom";
 
 export default class PutUser extends Api {
