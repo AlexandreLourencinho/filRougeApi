@@ -25,7 +25,7 @@ export type RawCountryEntity = {
 }
 
 export type RawHydrateDeliveryAddressEntity = {
-    adresse_livraison: RawDeliveryModeEntity,
+    adresse_livraison: RawDeliveryAddressEntity,
     utilisateurs: RawUserEntity,
     pays: RawCountryEntity
 }
@@ -43,7 +43,7 @@ export type RawDeliveryModeEntity = {
     id: number,
     nom_mode: string,
     libelle_liv: string,
-    delay_moy_liv: string
+    delay_moy_liv: number
 };
 
 export type RawReductionEntity = {
@@ -55,3 +55,24 @@ export type RawReductionEntity = {
     qte_reduction: number,
     statut_reduc: string
 };
+
+export type RawHydrateEffectiveReductionEntity = {
+    reduc_passee: RawEffectiveReductionEntity,
+    reduction: RawReductionEntity
+};
+
+export type RawEffectiveReductionEntity = {
+    id: number,
+    reduc_id: number
+};
+
+export type RawHydrateReductionByUserEntity = {
+    utilisateurs: RawUserEntity,
+    reduc_passee: RawEffectiveReductionEntity,
+    reduction: RawReductionEntity
+};
+
+export type RawReductionByUserEntity = {
+    reduc_passee_id: number,
+    utilisateurs_id: number
+}

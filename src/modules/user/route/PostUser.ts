@@ -27,16 +27,15 @@ export default class PostUser extends Api {
     public run(request: Request, response: ResponseToolkit): ResponseReturn {
         // @ts-ignore
         const {nom, prenom, email, role} = request.payload;
-        const userTable = new UserTable(request.getKnex());
-        const userEntity = new UserEntity();
         const password = makeUid(10);
-        userEntity.setNom(nom)
+        const userEntity = new UserEntity()
+            .setNom(nom)
             .setPrenom(prenom)
             .setPassword(password)
             .setEmail(email)
             .setRoles(role);
-        console.log('userEntity', userEntity);
-        return userTable.insert(userEntity)
+
+        return (new UserTable()).insert(userEntity)
             .then(userEntity => {
                 if (!userEntity) return Boom.internal('une erreur est survenue lors de l\'ajout.');
                 return response.response(userEntity).code(201);

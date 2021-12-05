@@ -25,10 +25,9 @@ const knex = Knex({
     },
 });
 
-export const validateJwt = (req: Request, token: ValidateJwtToken, res: ResponseToolkit): Promise<ValidateJwtOutput | void> => {
+export const validateJwt = (request: Request, token: ValidateJwtToken, res: ResponseToolkit): Promise<ValidateJwtOutput | void> => {
     const {decodedJWT} = token;
-    console.log('decodedJWT', decodedJWT)
-    const userTable = new UserTable(req.getKnex());
+    const userTable = new UserTable();
     return userTable.findOneBy({column: 'id', value: decodedJWT.id}, {
         column: 'nom',
         value: decodedJWT.nom
@@ -40,7 +39,7 @@ export const validateJwt = (req: Request, token: ValidateJwtToken, res: Response
             };
             return {
                 isValid: true,
-                credentials: (userEntity).toJson(),
+                credentials: userEntity,
             };
         });
 };

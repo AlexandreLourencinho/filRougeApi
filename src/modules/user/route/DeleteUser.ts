@@ -4,7 +4,6 @@ import {Request, ResponseReturn} from "../../../class/hapi/types";
 import {ResponseToolkit} from "@hapi/hapi";
 import UserTable from "../db/UserTable";
 import UserEntity from "../db/UserEntity";
-import {makeUid} from "../../../class/functions";
 import Boom from "@hapi/boom";
 
 export default class DeleteUser extends Api {
@@ -24,13 +23,10 @@ export default class DeleteUser extends Api {
     public run(request: Request, response: ResponseToolkit): ResponseReturn {
         // @ts-ignore
         const {id} = request.payload;
-        const userTable = new UserTable(request.getKnex());
-        const userEntity = new UserEntity();
-        userEntity.setId(parseInt(id));
-        console.log('userEntity', userEntity);
-        return userTable.delete(userEntity)
+        const userEntity = new UserEntity().setId(id);
+        return (new UserTable()).delete(userEntity)
             .then(result => {
-                if (!result) return Boom.internal('une erreur est survenue lors de la modification.');
+                if (!result) return Boom.internal('une erreur est survenue lors de la suppression.');
                 return response.response().code(200);
             })
     }

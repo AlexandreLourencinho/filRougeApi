@@ -27,22 +27,17 @@ export default class PutUser extends Api {
     public run(request: Request, response: ResponseToolkit): ResponseReturn {
         // @ts-ignore
         const {id, nom, prenom, email, role} = request.payload;
-        const userTable = new UserTable(request.getKnex());
         const usersEntity = new UserEntity();
         usersEntity.setId(parseInt(id))
             .setNom(nom)
             .setPrenom(prenom)
             .setEmail(email)
             .setRoles(role);
-        return userTable.findOneByid(usersEntity.getId())
-            .then(userEntity => {
+
+        return (new UserTable()).update(usersEntity).then(userEntity => {
                 if (!userEntity) return Boom.internal('une erreur est survenue lors de la modification.');
-                usersEntity.setPassword((userEntity as UserEntity).getPassword());
-                return userTable.update(usersEntity).then(userEntity => {
-                        if (!userEntity) return Boom.internal('une erreur est survenue lors de la modification.');
-                        return response.response(userEntity).code(201);
-                    }
-                )
-            })
+                return response.response(userEntity).code(201);
+            }
+        ).catch(() => Boom.internal('une erreur interne est survenue lors de la modification'));
     }
 }

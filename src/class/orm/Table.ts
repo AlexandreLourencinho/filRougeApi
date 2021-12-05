@@ -2,16 +2,16 @@ import Knex from "knex";
 import Entity from "./Entity";
 import Logger from "../logger/Logger";
 import {FindOneByArgs, Join} from "./types";
+import StaticKnex from "./StaticKnex";
 
 export default class Table {
 
-    protected readonly knex: Knex;
+    protected readonly knex: Knex = StaticKnex.getKnex();
     protected readonly table: string;
     private readonly entity: () => Entity;
     private readonly joins: Array<Join>
 
-    constructor(knex: Knex, table: string, entity: () => Entity, joins: Array<Join> = []) {
-        this.knex = knex;
+    constructor(table: string, entity: () => Entity, joins: Array<Join> = []) {
         this.table = table;
         this.entity = entity;
         this.joins = joins;

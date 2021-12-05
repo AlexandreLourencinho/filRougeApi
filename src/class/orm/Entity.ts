@@ -9,6 +9,7 @@ export default class Entity {
     }
 
     public static hydrate(data: Array<any>, entity: () => Entity): Array<Entity> | Entity | undefined {
+        console.log('data', data)
         if (data.length === 0) return undefined;
         if (data.length === 1) { // @ts-ignore
             return (new entity()).hydrate(data[0]);
@@ -23,9 +24,5 @@ export default class Entity {
 
     public toObject(): any {
         throw new Error('toObject method wasn\'t implemented yet');
-    }
-
-    public toJson(): Entity {
-        return this;
     }
 }

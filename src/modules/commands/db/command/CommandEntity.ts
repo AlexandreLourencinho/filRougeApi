@@ -1,7 +1,7 @@
 import Entity from "../../../../class/orm/Entity";
 import DeliveryAddressEntity from "../deliveryAddress/DeliveryAddressEntity";
 import DeliveryModEntity from "../deliveryMode/DeliveryModEntity";
-import {Moment} from "moment";
+import moment, {Moment} from "moment";
 import {RawCommandEntity, RawHydrateCommandEntity} from "../../types";
 import ReductionEntity from "../reduction/ReductionEntity";
 
@@ -82,19 +82,24 @@ export default class CommandEntity extends Entity {
 
 
     public hydrate(data: RawHydrateCommandEntity): CommandEntity {
-
+        this.id = data.commandes.id;
+        this.commandTotal = data.commandes.total_commande;
+        this.dateCom = moment(data.commandes.date_com);
+        this.status = data.commandes.statut;
+        this.deliveryAddress = (new DeliveryAddressEntity()).hydrate({utilisateurs: data.utilisateurs, pays: data.pays, adresse_livraison: data.adresse_livraison});
+        this.deliveryMode = (new DeliveryModEntity()).hydrate(data.modes_livraison);
+        this.reduction = (new ReductionEntity()).hydrate(data.reduction);
 
         return this;
     }
 
     public toObject(): RawCommandEntity{
 
-        const reducId = this.getReduction()? this.getReduction()?.getId() : null;
         return {
             id: this.getId(),
             addr_livr_id: this.getDeliveryAddress().getId(),
             mode_livr_id: this.getDeliveryMode().getId(),
-            reduc_id: reducId,
+            reduc_id: this.getReduction()?.getId(),
             date_com: this.getDateCom().toDate(),
             total_commande: this.getCommandTotal(),
             statut: this.getStatus()

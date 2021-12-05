@@ -15,15 +15,13 @@ export default class GetUsers extends Api {
 
     public run(request: Request, response: ResponseToolkit): ResponseReturn {
 
-        const userTable = new UserTable(request.getKnex());
-
-        return userTable.findAll()
+        return (new UserTable()).findAll()
             .then(arrayUsers => {
                 if (!arrayUsers) return Boom.internal('une erreur interne est survenue lors de la récupération des utilisateurs');
                if (Array.isArray(arrayUsers)) {
-                   return response.response(arrayUsers.map(user => user.toJson()));
+                   return response.response(arrayUsers.map(user => user));
                }
-               return response.response(arrayUsers.toJson());
+               return response.response(arrayUsers);
             });
     }
 }

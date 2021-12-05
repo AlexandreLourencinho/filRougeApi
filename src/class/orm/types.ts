@@ -11,6 +11,7 @@ export type Join = {
     type?: JoinType,
     table: string,
     fromTable?: string,
+    fromColumn?: string,
     column: string,
     operator?: string,
     references?: string

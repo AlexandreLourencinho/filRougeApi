@@ -33,7 +33,7 @@ export default class Auth extends Api {
     public run(request: Request, response: ResponseToolkit): ResponseReturn {
         // @ts-ignore
         const {nom, mail, password} = request.payload;
-        const userTable = new UserTable(request.getKnex());
+        const userTable = new UserTable();
 
         return userTable
             .findOneBy({column: 'nom', value: nom},{column: 'mail', value: mail}, {column: 'password', value: password})
